@@ -1,6 +1,5 @@
 'use server';
 
-import { ExtensionInfo } from '@/interfaces/interface';
 import { MongoClient } from 'mongodb';
 import axios from 'axios';
 
@@ -10,6 +9,14 @@ const GITHUB_TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN as string;
 const axiosInstance = axios.create({
 	headers: { Authorization: `token ${GITHUB_TOKEN}` },
 });
+
+export interface ExtensionInfo {
+	sha: string;
+	name: string;
+	description: string | null;
+	stargazers_count: number;
+	updated_at: string;
+}
 
 export async function getExtensions(): Promise<ExtensionInfo[]> {
 	const client = await MongoClient.connect(MONGODB_URI);

@@ -1,5 +1,5 @@
 import { ExtensionsTable } from '@/components/custom/table';
-import { getExtensions } from '@/app/actions/page';
+import { getExtensions } from '@/lib/actions';
 
 export default async function Home() {
 	const extensions = await getExtensions();

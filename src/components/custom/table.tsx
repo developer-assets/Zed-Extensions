@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ExtensionInfo } from '@/interfaces/interface';
-import { getExtensions, refreshExtensions } from '@/app/actions/page';
+import { getExtensions, refreshExtensions } from '@/lib/actions';
 import {
 	Table,
 	TableBody,
