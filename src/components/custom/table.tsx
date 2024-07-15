@@ -183,9 +183,6 @@ export function ExtensionsTable({
 								extensions.
 								<br />
 								Hitting refresh will make {extensions.length + 3} API calls.
-								<br />
-								Extensions are <strong>NOT</strong> updated daily,{' '}
-								<strong>NOT</strong> even weekly.
 							</DialogDescription>
 						</DialogHeader>
 						<DialogFooter className='mt-2'>
@@ -263,6 +260,14 @@ export function ExtensionsTable({
 							Page {currentPage} of {totalPages}
 						</p>
 						<Button
+							className='p-1 flex items-center justify-center'
+							variant='outline'
+							disabled={currentPage === 1}
+							onClick={() => handlePageChange(1)}>
+							<ChevronLeft />
+							<ChevronLeft />
+						</Button>
+						<Button
 							className='p-1'
 							variant='outline'
 							disabled={currentPage === 1}
@@ -274,6 +279,14 @@ export function ExtensionsTable({
 							variant='outline'
 							disabled={currentPage === totalPages}
 							onClick={() => handlePageChange(currentPage + 1)}>
+							<ChevronLeft className='rotate-180' />
+						</Button>
+						<Button
+							className='p-1 flex items-center justify-center'
+							variant='outline'
+							disabled={currentPage === totalPages}
+							onClick={() => handlePageChange(totalPages)}>
+							<ChevronLeft className='rotate-180' />
 							<ChevronLeft className='rotate-180' />
 						</Button>
 					</div>
