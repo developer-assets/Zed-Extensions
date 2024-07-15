@@ -48,6 +48,7 @@ export function ExtensionsTable({
 	const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 	const [buttonText, setButtonText] = useState<string>('Refresh');
 	const [itemsPerPage, setItemsPerPage] = useState<number>(10);
+	const [sortOrder, setSortOrder] = useState<string>('normal');
 
 	const handleRefresh = async () => {
 		setIsRefreshing(true);
@@ -89,6 +90,29 @@ export function ExtensionsTable({
 		setFilteredExtensions(temp);
 	};
 
+	const handleSortChange = (value: string) => {
+		setSortOrder(value);
+		let sortedExtensions = [...filteredExtensions];
+		if (value === 'ascending') {
+			sortedExtensions.sort((a, b) => a.stargazers_count - b.stargazers_count);
+		} else if (value === 'descending') {
+			sortedExtensions.sort((a, b) => b.stargazers_count - a.stargazers_count);
+		} else if (value === 'newest') {
+			sortedExtensions.sort(
+				(a, b) =>
+					new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+			);
+		} else if (value === 'oldest') {
+			sortedExtensions.sort(
+				(a, b) =>
+					new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime()
+			);
+		} else if (value === 'normal') {
+			sortedExtensions = extensions;
+		}
+		setFilteredExtensions(sortedExtensions);
+	};
+
 	const totalItems = filteredExtensions.length;
 	const totalPages = Math.ceil(totalItems / itemsPerPage);
 	const startIndex = (currentPage - 1) * itemsPerPage;
@@ -106,13 +130,41 @@ export function ExtensionsTable({
 	return (
 		<div className='mb-32'>
 			<div className='flex flex-col sm:flex-row items-center justify-between gap-3 mb-4'>
-				<Input
-					type='text'
-					placeholder='Search by name or description'
-					className='w-72'
-					value={searchQuery}
-					onChange={handleSearchChange}
-				/>
+				<div className='flex flex-col sm:flex-row items-center justify-between gap-3'>
+					<Input
+						type='text'
+						placeholder='Search by name or description'
+						className='w-72'
+						value={searchQuery}
+						onChange={handleSearchChange}
+					/>
+					<div className='flex items-center justify-center gap-3'>
+						<Select onValueChange={handleSortChange}>
+							<SelectTrigger className='w-32'>
+								<SelectValue placeholder='Sort by stars' />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectGroup>
+									<SelectItem value='normal'>Normal</SelectItem>
+									<SelectItem value='ascending'>Ascending</SelectItem>
+									<SelectItem value='descending'>Descending</SelectItem>
+								</SelectGroup>
+							</SelectContent>
+						</Select>
+						<Select onValueChange={handleSortChange}>
+							<SelectTrigger className='w-32'>
+								<SelectValue placeholder='Sort by date' />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectGroup>
+									<SelectItem value='normal'>Normal</SelectItem>
+									<SelectItem value='newest'>Newest</SelectItem>
+									<SelectItem value='oldest'>Oldest</SelectItem>
+								</SelectGroup>
+							</SelectContent>
+						</Select>
+					</div>
+				</div>
 				<Dialog
 					open={dialogOpen}
 					onOpenChange={setDialogOpen}>
@@ -171,8 +223,16 @@ export function ExtensionsTable({
 							<TableCell>{extension.name}</TableCell>
 							<TableCell>{extension.description}</TableCell>
 							<TableCell>{extension.stargazers_count}</TableCell>
-							<TableCell>
-								{new Date(extension.updated_at).toLocaleDateString()}
+							<TableCell className='tabular-nums'>
+								{(() => {
+									const date = new Date(extension.updated_at);
+									const options: Intl.DateTimeFormatOptions = {
+										month: 'short',
+										day: '2-digit',
+										year: 'numeric',
+									};
+									return date.toLocaleDateString('en-US', options);
+								})()}
 							</TableCell>
 						</TableRow>
 					))}
