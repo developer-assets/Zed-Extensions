@@ -45,8 +45,6 @@ export async function refreshExtensions(): Promise<{ message: string }> {
 
 		const response = await axiosInstance.get(url);
 
-		console.log(response.data);
-
 		const extensionsData = await Promise.all(
 			response.data
 				.map(async (item: any) => {
